@@ -46,27 +46,27 @@ if uploaded_file is not None:
         temp_file.write(uploaded_file.read())
 
     st.write("Full path of the uploaded file:", temp_file_path)
-
 # Set APIkey for OpenAI Service
 # Can sub this out for other LLM providers
-os.environ['OPENAI_API_KEY'] = # Your OpenAI API Key
+os.environ['OPENAI_API_KEY'] ="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"
 
 # Create instance of OpenAI LLM
-llm = OpenAI(temperature=0.1, verbose=True)
+llm = OpenAI(temperature=0.7, verbose=True)
 embeddings = OpenAIEmbeddings()
 
 # Create and load PDF Loader
 loader = PyPDFLoader(temp_file_path)
+
 # Split pages from pdf 
 pages = loader.load_and_split()
 
 # Load documents into vector database aka ChromaDB
-store = Chroma.from_documents(pages, embeddings, collection_name='Pdf')
+store = Chroma.from_documents(pages, embeddings)
 
 # Create vectorstore info object
 vectorstore_info = VectorStoreInfo(
     name="Pdf",
-    description=" A pdf file to answer your questions",
+    description="A pdf file to answer your questions",
     vectorstore=store
 )
 # Convert the document store into a langchain toolkit
@@ -86,6 +86,7 @@ prompt = st.text_input('Input your prompt here')
 if prompt:
     # Then pass the prompt to the LLM
     response = agent_executor.run(prompt)
+    print(response)
     # ...and write it out to the screen
     st.write(response)
 
